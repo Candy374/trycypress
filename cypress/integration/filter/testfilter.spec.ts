@@ -335,7 +335,7 @@ describe("The Home Page", () => {
 function clickBirthday() {
   cy.get(".ant-input.ant-cascader-input").click();
   cy.contains("属性字段").click();
-  cy.contains("生日").click();
+  cy.get(".ant-cascader-menu-item:contains('生日')").click();
 }
 
 function testTemplate({ tabName, clickTarget, checkName, data }) {
