@@ -1,11 +1,13 @@
 before(() => {
-  cy.visit('/data/login.html');
+  cy.visit('/');
     cy.get('#username').type('24');
     cy.get('#password').type('Focuson789');
     cy.contains('登 录').click();
 
     cy.get('.organization-select').click();
     cy.contains('吉利汽车').click();
+    cy.request('https://data.dmhub.cn/data/index.html#/test');
+
     cy.contains('添加条件组').click();
     cy.get('.can-delete-line').should('be.visible');
 })
