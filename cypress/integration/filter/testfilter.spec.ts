@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 before(() => {
-  cy.visit("/data/login.html");
+  cy.visit("/");
   cy.get("#username").type("24");
   cy.get("#password").type("Focuson789");
   cy.contains("登 录").click();
@@ -250,6 +250,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 绝对时间 16号", () => {
+    clickBirthday();
     cy.get(".ant-btn:nth-child(4)").click();
     cy.contains("相对时间").should("be.visible");
     cy.contains("绝对时间").click();
@@ -262,25 +263,18 @@ describe("The Home Page", () => {
       expect($button.text()).to.match(/\d{4}-\d{2}-16/);
     });
 
-    cy.get("#filter-value").should(
-      "have.text",
-      JSON.stringify(
-        {
-          type: "filter",
-          filter: {
-            dataTable: "dw_pq_profile",
-            operator: "equal",
-            equal: {
-              fieldExpression: "date_trunc('DAY', $_birthday)",
-              fieldExpressionValue: "'2021-08-16'",
-              field: "_birthday",
-            },
-          },
+    checkData({
+      type: "filter",
+      filter: {
+        dataTable: "dw_pq_profile",
+        operator: "equal",
+        equal: {
+          fieldExpression: "date_trunc('DAY', $_birthday)",
+          fieldExpressionValue: "'2021-08-16'",
+          field: "_birthday",
         },
-        null,
-        2
-      )
-    );
+      },
+    });
   });
 
   it("basic property date 周期时间 3 月", () => {
@@ -309,7 +303,9 @@ describe("The Home Page", () => {
   });
 
   it("date less than has no range date", () => {
+    console.log("sdfsf");
     clickBirthday();
+
     cy.get(
       ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
     ).click();
@@ -317,20 +313,23 @@ describe("The Home Page", () => {
 
     cy.get(".ant-btn:nth-child(4)").click();
     cy.contains("相对时间").should("be.visible");
-    expect(cy.get(".ant-tabs-nav-list .ant-tabs-tab").children.length).to.eq(2);
+
+    cy.get(".ant-tabs-nav-list .ant-tabs-tab").then(($tabs) => {
+      expect($tabs.children.length).to.eq(2);
+    });
   });
 
-  it("date less than has no range date", () => {
-    cy.get(
-      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
-    ).click();
-    cy.contains("区间").click();
+  // it("date less than has no range date", () => {
+  //   cy.get(
+  //     ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+  //   ).click();
+  //   cy.contains("区间").click();
 
-    cy.get(".ant-btn:nth-child(4)").click();
-    cy.contains("相对时间").should("be.visible");
-    // cy.contains("周期时间").should("not.be.visible");
-    expect(cy.get(".ant-tabs-nav-list .ant-tabs-tab").children.length).to.eq(2);
-  });
+  //   cy.get(".ant-btn:nth-child(4)").click();
+  //   cy.contains("相对时间").should("be.visible");
+  //   // cy.contains("周期时间").should("not.be.visible");
+  //   expect(cy.get(".ant-tabs-nav-list .ant-tabs-tab").children.length).to.eq(2);
+  // });
 });
 
 function clickBirthday() {
@@ -351,7 +350,12 @@ function testTemplate({ tabName, clickTarget, checkName, data }) {
     expect($button.text()).to.eq(checkName);
   });
 
+  checkData(data);
+}
+
+function checkData(data) {
   cy.contains("查 询").click();
 
   cy.get("#filter-value").should("have.text", JSON.stringify(data, null, 2));
+  // cy.contains("clear").clear();
 }
