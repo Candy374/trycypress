@@ -6,10 +6,29 @@ before(() => {
   cy.get("#password").type("Focuson789");
   cy.contains("登 录").click();
 
-  cy.get(".organization-select").click();
-  cy.contains("吉利汽车").click();
+  cy.get(".ant-breadcrumb:contains('首页')").should("be.visible");
+
+  // cy.on("url:changed", (url) => {
+  //   console.log("url>>>>", url);
+  //   if (url.indexOf("#/ws/Geely/home") > -1) {
+  //     window.location.hash = "/test";
+  //   }
+  // });
+
+  cy.wait(3000);
+  cy.window().then((window) => {
+    window.location.hash = "/test";
+  });
+
+  // cy.contains("标签").click();
+
+  // cy.visit("/data/index.html/#/test");
+  // cy.get(".organization-select").click();
+  // cy.contains("吉利汽车").click();
+
+  // cy.visit("/data/index.html/#/test");
   cy.contains("添加条件组").click();
-  cy.get(".can-delete-line").should("be.visible");
+  // cy.get(".can-delete-line").should("be.visible");
 });
 describe("The Home Page", () => {
   // beforeEach(() => {
@@ -149,8 +168,8 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValue: "year(now())-3",
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValue: "date_sub(date_trunc('DAY',now()),3)",
             field: "_birthday",
           },
         },
@@ -289,7 +308,7 @@ describe("The Home Page", () => {
     });
   });
 
-  it.only("date less than has no range date", () => {
+  it("date less than has no range date", () => {
     clickBirthday();
     cy.get(
       ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
