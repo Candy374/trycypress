@@ -642,6 +642,35 @@ describe("The Home Page", () => {
       },
     });
   });
+
+  it.skip("operator = between 绝对时间", () => {
+    clickBirthday();
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "绝对时间",
+      clickTarget: () => {
+        cy.get('[title="2021-08-18"]').click();
+      },
+      checkName: "未来45年",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "year($_birthday)",
+            fieldExpressionValueLeft: "year(now())+1",
+            fieldExpressionValueRight: "year(now())+45",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
 });
 
 function clickBirthday() {
