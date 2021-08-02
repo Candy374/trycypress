@@ -251,7 +251,7 @@ describe("The Home Page", () => {
 
   it("basic property date 绝对时间 16号", () => {
     clickBirthday();
-    cy.get(".ant-btn:nth-child(4)").click();
+    getDateSettingButton().click();
     cy.contains("相对时间").should("be.visible");
     cy.contains("绝对时间").click();
     // cy.contains('2021').click();
@@ -259,7 +259,7 @@ describe("The Home Page", () => {
     cy.contains("16").click();
 
     cy.contains("确 认").click();
-    cy.get(".ant-btn:nth-child(4)").should(($button) => {
+    getDateSettingButton().should(($button) => {
       expect($button.text()).to.match(/\d{4}-\d{2}-16/);
     });
 
@@ -303,7 +303,6 @@ describe("The Home Page", () => {
   });
 
   it("date less than has no range date", () => {
-    console.log("sdfsf");
     clickBirthday();
 
     cy.get(
@@ -311,7 +310,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("早于").click();
 
-    cy.get(".ant-btn:nth-child(4)").click();
+    getDateSettingButton().click();
     cy.contains("相对时间").should("be.visible");
 
     cy.get(".ant-tabs-nav-list .ant-tabs-tab").then(($tabs) => {
@@ -319,17 +318,330 @@ describe("The Home Page", () => {
     });
   });
 
-  // it("date less than has no range date", () => {
-  //   cy.get(
-  //     ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
-  //   ).click();
-  //   cy.contains("区间").click();
+  it("operator = between has no range date", () => {
+    clickBirthday();
 
-  //   cy.get(".ant-btn:nth-child(4)").click();
-  //   cy.contains("相对时间").should("be.visible");
-  //   // cy.contains("周期时间").should("not.be.visible");
-  //   expect(cy.get(".ant-tabs-nav-list .ant-tabs-tab").children.length).to.eq(2);
-  // });
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    getDateSettingButton().click();
+    cy.contains("相对时间").should("be.visible");
+
+    cy.get(".ant-tabs-nav-list .ant-tabs-tab").then(($tabs) => {
+      expect($tabs.children.length).to.eq(2);
+    });
+  });
+
+  it("operator = between 本 周", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("本 周").click();
+      },
+      checkName: "本 周",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft: "date_trunc('WEEK', now())",
+            fieldExpressionValueRight: "date_trunc('WEEK',date_add(now(),7))",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 上 周", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("上 周").click();
+      },
+      checkName: "上 周",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft: "date_trunc('WEEK',date_sub(now(),7))",
+            fieldExpressionValueRight: "date_trunc('WEEK', now())",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 上 月", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("上 月").click();
+      },
+      checkName: "上 月",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft:
+              "add_months(date_trunc('MONTH',now()),-1)",
+            fieldExpressionValueRight: "date_trunc('MONTH',now())",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 本 月", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("本 月").click();
+      },
+      checkName: "本 月",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft: "date_trunc('MONTH',now())",
+            fieldExpressionValueRight:
+              "add_months(date_trunc('MONTH',now()),1)",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 去 年", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("去 年").click();
+      },
+      checkName: "去 年",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "year($_birthday)",
+            fieldExpressionValueLeft: "year(now())-1",
+            fieldExpressionValueRight: "year(now())",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 本 年", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.contains("本 年").click();
+      },
+      checkName: "本 年",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "year($_birthday)",
+            fieldExpressionValueLeft: "year(now())",
+            fieldExpressionValueRight: "year(now())+1",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 过去 18 天", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.get(
+          ":nth-child(3) > :nth-child(1) > .ant-row > .ant-input-number > .ant-input-number-input-wrap > .ant-input-number-input"
+        ).type("18");
+      },
+      checkName: "过去18天",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft: "date_sub(date_trunc('DAY',now()),18)",
+            fieldExpressionValueRight: "date_trunc('DAY', now())",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 过去 20 年", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.get(
+          ":nth-child(3) > :nth-child(2) > .ant-row > .ant-input-number > .ant-input-number-input-wrap > .ant-input-number-input"
+        ).type("20");
+      },
+      checkName: "过去20年",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "year($_birthday)",
+            fieldExpressionValueLeft: "year(now())-20",
+            fieldExpressionValueRight: "year(now())",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 未来31天", () => {
+    clickBirthday();
+
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.get(
+          ":nth-child(5) > :nth-child(1) > .ant-row > .ant-input-number > .ant-input-number-input-wrap > .ant-input-number-input"
+        ).type("31");
+      },
+      checkName: "未来31天",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpressionValueLeft: "date_add(date_trunc('DAY',now()),1)",
+            fieldExpressionValueRight: "date_add(date_trunc('DAY',now()),31)",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
+
+  it("operator = between 未来45年", () => {
+    clickBirthday();
+    cy.get(
+      ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
+    ).click();
+    cy.contains("区间").click();
+
+    testTemplate({
+      tabName: "相对时间",
+      clickTarget: () => {
+        cy.get(
+          ":nth-child(5) > :nth-child(2) > .ant-row > .ant-input-number > .ant-input-number-input-wrap > .ant-input-number-input"
+        ).type("45");
+      },
+      checkName: "未来45年",
+      data: {
+        type: "filter",
+        filter: {
+          dataTable: "dw_pq_profile",
+          operator: "between",
+          between: {
+            fieldExpression: "year($_birthday)",
+            fieldExpressionValueLeft: "year(now())+1",
+            fieldExpressionValueRight: "year(now())+45",
+            field: "_birthday",
+          },
+        },
+      },
+    });
+  });
 });
 
 function clickBirthday() {
@@ -339,14 +651,15 @@ function clickBirthday() {
 }
 
 function testTemplate({ tabName, clickTarget, checkName, data }) {
-  cy.get(".ant-btn:nth-child(4)").click();
+  // cy.get(".ant-btn:nth-child(4)").click();
+  getDateSettingButton().click();
   cy.contains("相对时间").should("be.visible");
   cy.contains(tabName).click();
   clickTarget();
 
   cy.contains("确 认").click();
   cy.get(".ant-popover").should("not.be.visible");
-  cy.get(".ant-btn:nth-child(4)").should(($button) => {
+  getDateSettingButton().should(($button) => {
     expect($button.text()).to.eq(checkName);
   });
 
@@ -358,4 +671,8 @@ function checkData(data) {
 
   cy.get("#filter-value").should("have.text", JSON.stringify(data, null, 2));
   // cy.contains("clear").clear();
+}
+
+function getDateSettingButton() {
+  return cy.get(".can-delete-line > :nth-child(1) > .ant-row > .ant-btn");
 }
