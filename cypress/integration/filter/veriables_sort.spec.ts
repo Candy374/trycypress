@@ -27,7 +27,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("属性字段 邮箱", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [["属性字段", "邮箱"]],
       sortField: "",
       data: {
@@ -38,7 +38,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("查找-属性字段", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["属性字段", "做过的蠢事"],
         ["属性字段", "创建批次"],
@@ -59,7 +59,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("查找-查找-属性字段", () => {
-    // testTemplate({
+    // testSortFieldTemplate({
     //   clickValues: [
     //     ["属性字段", "做过的蠢事"],
     //     ["属性字段", "创建批次"],
@@ -79,7 +79,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("查找-反查-属性字段", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["属性字段", "做过的蠢事"],
         ["其他关联表", "我做了"],
@@ -109,7 +109,7 @@ describe("计算值标签- 排序字段", () => {
       },
     });
 
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [["属性字段", "所属顾问"]],
       sortField: "",
       data: {
@@ -120,7 +120,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("反查-属性字段 -> 反查-查找-属性字段(清空) -> add sort", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["其他关联表", "人-酒店关系"],
         ["属性字段", "名称"],
@@ -139,7 +139,7 @@ describe("计算值标签- 排序字段", () => {
       },
     });
 
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["其他关联表", "人-酒店关系"],
         ["属性字段", "客户信息"],
@@ -170,7 +170,7 @@ describe("计算值标签- 排序字段", () => {
     });
 
     clickSortField("头像");
-    verify({
+    verifySortField({
       field: "",
       dataTable: "dw_cust_hotel",
       relationship: {
@@ -194,7 +194,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("反查-查找-属性字段", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["其他关联表", "人-酒店关系"],
         ["属性字段", "客户信息"],
@@ -226,7 +226,7 @@ describe("计算值标签- 排序字段", () => {
   });
 
   it("反查-反查-属性字段", () => {
-    testTemplate({
+    testSortFieldTemplate({
       clickValues: [
         ["其他关联表", "客户的dw_g_profile"],
         ["其他关联表", "test"],
@@ -258,11 +258,11 @@ describe("计算值标签- 排序字段", () => {
   });
 });
 
-function verify(data) {
+function verifySortField(data) {
   cy.get("#data").should("have.text", JSON.stringify(data, null, 2));
 }
 
-function testTemplate({
+function testSortFieldTemplate({
   clickValues,
   data,
   sortField,
@@ -291,7 +291,7 @@ function testTemplate({
     // cy.contains("排序字段").should("not.be.visible");
   }
 
-  verify(data);
+  verifySortField(data);
 }
 
 function clickSortField(sortField: string) {

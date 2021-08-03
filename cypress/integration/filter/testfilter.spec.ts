@@ -60,7 +60,7 @@ describe("The Home Page", () => {
   it("basic property date 昨 日", () => {
     clickBirthday();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("昨 日").click();
@@ -82,7 +82,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 周期时间 周六", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "周期时间",
       clickTarget: () => {
         cy.get(
@@ -107,7 +107,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 周期时间 10 号", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "周期时间",
       clickTarget: () => {
         cy.get(
@@ -132,7 +132,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 今 日", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("今 日").click();
@@ -154,7 +154,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 过去第3天", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -178,7 +178,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 未来第4天", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -202,7 +202,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 过去第2年", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -226,7 +226,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 未来第14年", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -278,7 +278,7 @@ describe("The Home Page", () => {
   });
 
   it("basic property date 周期时间 3 月", () => {
-    testTemplate({
+    testFilterTemplate({
       tabName: "周期时间",
       clickTarget: () => {
         cy.get(
@@ -342,7 +342,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("本 周").click();
@@ -372,7 +372,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("上 周").click();
@@ -402,7 +402,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("上 月").click();
@@ -433,7 +433,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("本 月").click();
@@ -464,7 +464,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("去 年").click();
@@ -494,7 +494,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.contains("本 年").click();
@@ -524,7 +524,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -556,7 +556,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -588,7 +588,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -619,7 +619,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
         cy.get(
@@ -650,7 +650,7 @@ describe("The Home Page", () => {
     ).click();
     cy.contains("区间").click();
 
-    testTemplate({
+    testFilterTemplate({
       tabName: "绝对时间",
       clickTarget: () => {
         cy.get('[title="2021-08-18"]').click();
@@ -679,7 +679,7 @@ function clickBirthday() {
   cy.get(".ant-cascader-menu-item:contains('生日')").click();
 }
 
-function testTemplate({ tabName, clickTarget, checkName, data }) {
+function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
   // cy.get(".ant-btn:nth-child(4)").click();
   getDateSettingButton().click();
   cy.contains("相对时间").should("be.visible");
