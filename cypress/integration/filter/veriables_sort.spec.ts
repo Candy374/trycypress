@@ -77,6 +77,7 @@ describe("计算值标签- 排序字段", () => {
         },
         variable: {
           field: "_name",
+          sortField: "_email",
           dataTable: "dw_customer",
           relationship: {
             destinationTable: "dw_test_event",
@@ -85,7 +86,7 @@ describe("计算值标签- 排序字段", () => {
             relationType: "lookup",
           },
         },
-        sortField: "_email",
+        sortField: "",
       },
     });
 
@@ -160,6 +161,7 @@ describe("计算值标签- 排序字段", () => {
         relationType: "lookup",
       },
       variable: {
+        sortField: "_img",
         field: "_last_updated_batch_id",
         dataTable: "dw_customer",
         relationship: {
@@ -169,7 +171,7 @@ describe("计算值标签- 排序字段", () => {
           relationType: "lookup",
         },
       },
-      sortField: "_img",
+      sortField: "",
     });
   });
 
@@ -192,6 +194,7 @@ describe("计算值标签- 排序字段", () => {
         },
         variable: {
           field: "_date_created",
+          sortField: "_img",
           dataTable: "dw_customer",
           relationship: {
             destinationField: "_id",
@@ -200,7 +203,7 @@ describe("计算值标签- 排序字段", () => {
             relationType: "lookup",
           },
         },
-        sortField: "_img",
+        sortField: "",
       },
     });
   });
@@ -224,6 +227,7 @@ describe("计算值标签- 排序字段", () => {
         },
         variable: {
           field: "_last_updated",
+          sortField: "_creator_id",
           dataTable: "dw_test",
           relationship: {
             destinationTable: "dw_g_profile",
@@ -232,14 +236,18 @@ describe("计算值标签- 排序字段", () => {
             relationType: "lookup",
           },
         },
-        sortField: "_creator_id",
+        sortField: "",
       },
     });
   });
 });
 
 function verifySortField(data) {
-  cy.get("#data").should("have.text", JSON.stringify(data, null, 2));
+  cy.get("#data").should(($div) => {
+    const text = $div.text();
+
+    expect(JSON.parse(text)).to.deep.eq(data);
+  });
 }
 
 function testSortFieldTemplate({
