@@ -1,3 +1,5 @@
 {
-  "baseUrl": "https://data.dmhub.cn/data/index.html"
+  "baseUrl": "https://data.dmhub.cn/data/index.html",
+  "viewportWidth": 1800,
+  "viewportHeight": 1260
 }
