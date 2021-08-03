@@ -72,8 +72,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValue: "date_sub(date_trunc('DAY',now()),1)",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "date_sub(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),1)",
             field: "_birthday",
           },
         },
@@ -97,7 +99,8 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "dayofweek($_birthday)",
+            fieldExpression:
+              "dayofweek(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
             fieldExpressionValue: "7",
             field: "_birthday",
           },
@@ -122,7 +125,8 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "day($_birthday)",
+            fieldExpression:
+              "day(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
             fieldExpressionValue: "10",
             field: "_birthday",
           },
@@ -144,8 +148,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValue: "date_trunc('DAY',now())",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -168,8 +174,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValue: "date_sub(date_trunc('DAY',now()),3)",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "date_sub(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),3)",
             field: "_birthday",
           },
         },
@@ -192,8 +200,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValue: "date_add(date_trunc('DAY',now()),4)",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "date_add(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),4)",
             field: "_birthday",
           },
         },
@@ -216,8 +226,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValue: "year(now())-2",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))-2",
             field: "_birthday",
           },
         },
@@ -240,8 +252,10 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValue: "year(now())+14",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValue:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+14",
             field: "_birthday",
           },
         },
@@ -269,7 +283,8 @@ describe("The Home Page", () => {
         dataTable: "dw_pq_profile",
         operator: "equal",
         equal: {
-          fieldExpression: "date_trunc('DAY', $_birthday)",
+          fieldExpression:
+            "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
           fieldExpressionValue: "'2021-08-16'",
           field: "_birthday",
         },
@@ -293,7 +308,8 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "equal",
           equal: {
-            fieldExpression: "month($_birthday)",
+            fieldExpression:
+              "month(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
             fieldExpressionValue: "3",
             field: "_birthday",
           },
@@ -354,9 +370,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValueLeft: "date_trunc('WEEK', now())",
-            fieldExpressionValueRight: "date_trunc('WEEK',date_add(now(),7))",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "date_trunc('WEEK', from_utc_timestamp(now(),'Asia/Shanghai'))",
+            fieldExpressionValueRight:
+              "date_trunc('WEEK',date_add(from_utc_timestamp(now(),'Asia/Shanghai'),7))",
             field: "_birthday",
           },
         },
@@ -384,9 +403,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValueLeft: "date_trunc('WEEK',date_sub(now(),7))",
-            fieldExpressionValueRight: "date_trunc('WEEK', now())",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "date_trunc('WEEK',date_sub(from_utc_timestamp(now(),'Asia/Shanghai'),7))",
+            fieldExpressionValueRight:
+              "date_trunc('WEEK', from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -414,10 +436,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
             fieldExpressionValueLeft:
-              "add_months(date_trunc('MONTH',now()),-1)",
-            fieldExpressionValueRight: "date_trunc('MONTH',now())",
+              "add_months(date_trunc('MONTH',from_utc_timestamp(now(),'Asia/Shanghai')),-1)",
+            fieldExpressionValueRight:
+              "date_trunc('MONTH',from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -445,10 +469,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValueLeft: "date_trunc('MONTH',now())",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "date_trunc('MONTH',from_utc_timestamp(now(),'Asia/Shanghai'))",
             fieldExpressionValueRight:
-              "add_months(date_trunc('MONTH',now()),1)",
+              "add_months(date_trunc('MONTH',from_utc_timestamp(now(),'Asia/Shanghai')),1)",
             field: "_birthday",
           },
         },
@@ -476,9 +502,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValueLeft: "year(now())-1",
-            fieldExpressionValueRight: "year(now())",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))-1",
+            fieldExpressionValueRight:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -506,9 +535,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValueLeft: "year(now())",
-            fieldExpressionValueRight: "year(now())+1",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))",
+            fieldExpressionValueRight:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+1",
             field: "_birthday",
           },
         },
@@ -538,9 +570,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValueLeft: "date_sub(date_trunc('DAY',now()),18)",
-            fieldExpressionValueRight: "date_trunc('DAY', now())",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "date_sub(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),18)",
+            fieldExpressionValueRight:
+              "date_trunc('DAY', from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -570,9 +605,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValueLeft: "year(now())-20",
-            fieldExpressionValueRight: "year(now())",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))-20",
+            fieldExpressionValueRight:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))",
             field: "_birthday",
           },
         },
@@ -602,9 +640,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "date_trunc('DAY', $_birthday)",
-            fieldExpressionValueLeft: "date_add(date_trunc('DAY',now()),1)",
-            fieldExpressionValueRight: "date_add(date_trunc('DAY',now()),31)",
+            fieldExpression:
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "date_add(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),1)",
+            fieldExpressionValueRight:
+              "date_add(date_trunc('DAY',from_utc_timestamp(now(),'Asia/Shanghai')),31)",
             field: "_birthday",
           },
         },
@@ -633,9 +674,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValueLeft: "year(now())+1",
-            fieldExpressionValueRight: "year(now())+45",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+1",
+            fieldExpressionValueRight:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+45",
             field: "_birthday",
           },
         },
@@ -662,9 +706,12 @@ describe("The Home Page", () => {
           dataTable: "dw_pq_profile",
           operator: "between",
           between: {
-            fieldExpression: "year($_birthday)",
-            fieldExpressionValueLeft: "year(now())+1",
-            fieldExpressionValueRight: "year(now())+45",
+            fieldExpression:
+              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+1",
+            fieldExpressionValueRight:
+              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+45",
             field: "_birthday",
           },
         },
@@ -696,10 +743,14 @@ function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
 }
 
 function checkData(data) {
+  cy.contains("clear").click();
   cy.contains("查 询").click();
 
-  cy.get("#filter-value").should("have.text", JSON.stringify(data, null, 2));
-  // cy.contains("clear").clear();
+  cy.get("#filter-value").should(($div) => {
+    const text = $div.text();
+
+    expect(JSON.parse(text)).to.deep.eq(data);
+  });
 }
 
 function getDateSettingButton() {
