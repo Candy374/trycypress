@@ -20,28 +20,10 @@ before(() => {
     window.location.hash = "/test";
   });
 
-  // cy.contains("标签").click();
-
-  // cy.visit("/data/index.html/#/test");
-  // cy.get(".organization-select").click();
-  // cy.contains("吉利汽车").click();
-
-  // cy.visit("/data/index.html/#/test");
   cy.contains("添加条件组").click();
-  // cy.get(".can-delete-line").should("be.visible");
 });
 describe("The Home Page", () => {
-  // beforeEach(() => {
-  //   cy.visit('/data/login.html');
-  //   cy.get('#username').type('24');
-  //   cy.get('#password').type('Focuson789');
-  //   cy.contains('登 录').click();
-
-  //   cy.get('.organization-select').click();
-  //   cy.contains('吉利汽车').click()
-  // });
-
-  it.skip("basic property text", () => {
+  it("basic property text", () => {
     cy.get(".ant-input.ant-cascader-input").click();
     cy.contains("属性字段").click();
     cy.contains("名称").click();
@@ -687,7 +669,7 @@ describe("The Home Page", () => {
     });
   });
 
-  it.skip("operator = between 绝对时间", () => {
+  it.only("operator = between 绝对时间 2021-08-18 - 2021-09-15", () => {
     clickBirthday();
     cy.get(
       ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
@@ -698,8 +680,9 @@ describe("The Home Page", () => {
       tabName: "绝对时间",
       clickTarget: () => {
         cy.get('[title="2021-08-18"]').click();
+        cy.get('[title="2021-09-15"]').click();
       },
-      checkName: "未来45年",
+      checkName: "2021-08-18 ~ 2021-09-15",
       data: {
         type: "filter",
         filter: {
@@ -707,11 +690,9 @@ describe("The Home Page", () => {
           operator: "between",
           between: {
             fieldExpression:
-              "year(from_utc_timestamp($_birthday,'Asia/Shanghai'))",
-            fieldExpressionValueLeft:
-              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+1",
-            fieldExpressionValueRight:
-              "year(from_utc_timestamp(now(),'Asia/Shanghai'))+45",
+              "date_trunc('DAY', from_utc_timestamp($_birthday,'Asia/Shanghai'))",
+            fieldExpressionValueLeft: "'2021-08-18'",
+            fieldExpressionValueRight: "'2021-09-15'",
             field: "_birthday",
           },
         },
