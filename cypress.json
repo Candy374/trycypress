@@ -1,5 +1,7 @@
 {
   "baseUrl": "https://data.dmhub.cn/data/index.html",
   "viewportWidth": 1800,
-  "viewportHeight": 1260
+  "viewportHeight": 1260,
+  "projectId": "citbmu",
+  "ignoreTestFiles": "*.spec.js"
 }
