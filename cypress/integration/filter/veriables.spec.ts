@@ -56,24 +56,35 @@ describe("计算值标签", () => {
     });
   });
 
-  it("查找-查找-属性字段", () => {
-    // testTemplate({
-    //   clickValues: [
-    //     ["属性字段", "做过的蠢事"],
-    //     ["属性字段", "创建批次"],
-    //   ],
-    //   data: {
-    //     field: "batch_id",
-    //     dataTable: "dw_test_event",
-    //     relationship: {
-    //       destinationField: "_id",
-    //       sourceTable: "dw_customer",
-    //       sourceField: "dummy",
-    //       relationType: "lookup",
-    //     },
-    //     sortField: "",
-    //   },
-    // });
+  it.only("查找-查找-属性字段", () => {
+    testTemplate({
+      clickValues: [
+        ["属性字段", "可用门店"],
+        ["属性字段", "车辆"],
+        ["创建批次"],
+      ],
+      data: {
+        field: "",
+        dataTable: "store",
+        relationship: {
+          destinationField: "_id",
+          sourceTable: "dw_hotel",
+          sourceField: "store",
+          relationType: "lookup",
+        },
+        variable: {
+          field: "batch_id",
+          dataTable: "dw_buy_car",
+          relationship: {
+            destinationField: "_id",
+            sourceTable: "store",
+            sourceField: "car",
+            relationType: "lookup",
+          },
+        },
+        sortField: "",
+      },
+    });
   });
 
   it("查找-反查-属性字段", () => {

@@ -58,26 +58,6 @@ describe("计算值标签- 排序字段", () => {
     });
   });
 
-  it("查找-查找-属性字段", () => {
-    // testSortFieldTemplate({
-    //   clickValues: [
-    //     ["属性字段", "做过的蠢事"],
-    //     ["属性字段", "创建批次"],
-    //   ],
-    //   data: {
-    //     field: "batch_id",
-    //     dataTable: "dw_test_event",
-    //     relationship: {
-    //       destinationField: "_id",
-    //       sourceTable: "dw_customer",
-    //       sourceField: "dummy",
-    //       relationType: "lookup",
-    //     },
-    //     sortField: "",
-    //   },
-    // });
-  });
-
   it("查找-反查-属性字段", () => {
     testSortFieldTemplate({
       clickValues: [
