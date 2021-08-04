@@ -367,5 +367,9 @@ function selectFilter({ id, tableName }: { id: number; tableName }) {
 }
 
 function verifyFilterCondition(data) {
-  cy.get("#data").should("have.text", JSON.stringify(data, null, 2));
+  cy.get("#data").should(($div) => {
+    const text = $div.text();
+
+    expect(JSON.parse(text)).to.deep.eq(data);
+  });
 }

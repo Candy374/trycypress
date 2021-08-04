@@ -12,6 +12,7 @@ describe("计算值标签", () => {
   });
 
   it("属性字段 邮箱", () => {
+    cy.wait(2000);
     testTemplate({
       clickValues: [["属性字段", "邮箱"]],
       data: {
@@ -41,7 +42,15 @@ describe("计算值标签", () => {
     });
   });
 
-  it.only("查找-查找-属性字段", () => {
+  it("查找-查找-属性字段", () => {
+    cy.get(".ant-drawer-footer").contains("取 消").click();
+    cy.window().then((window) => {
+      window.location.hash =
+        "/ws/Geely/trait_manage/dw_hotel/detail/rule/compute_value/_new";
+    });
+    cy.wait(3000);
+    cy.contains("编辑公式").click();
+    cy.contains("添加变量").click();
     testTemplate({
       clickValues: [
         ["属性字段", "可用门店"],
@@ -208,6 +217,9 @@ function testTemplate({
 
     i++;
   }
+  cy.get("#data").should(($div) => {
+    const text = $div.text();
 
-  cy.get("#data").should("have.text", JSON.stringify(data, null, 2));
+    expect(JSON.parse(text)).to.deep.eq(data);
+  });
 }
