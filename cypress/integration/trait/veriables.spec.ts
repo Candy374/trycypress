@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import { login, gotToComputeValueTraitDetail } from "./utils";
+import { login } from "../utils";
+import { gotToComputeValueTraitDetail } from "./utils";
 
 describe("计算值标签", () => {
   beforeEach(() => {

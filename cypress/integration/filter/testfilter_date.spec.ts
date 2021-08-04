@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { login } from "../trait/utils";
+import { login } from "../utils";
 
 before(() => {
   login();

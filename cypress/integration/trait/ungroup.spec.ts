@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
-import { gotToTraitList, login } from "./utils";
+import { login } from "../utils";
+import { gotToTraitList } from "./utils";
 
 beforeEach(() => {
   login();
