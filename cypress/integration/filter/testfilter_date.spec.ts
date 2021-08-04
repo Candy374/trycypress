@@ -1,44 +1,16 @@
 /// <reference types="cypress" />
 
+import { login } from "../trait/utils";
+
 before(() => {
-  cy.visit("/");
-  cy.get("#username").type("24");
-  cy.get("#password").type("Focuson789");
-  cy.contains("登 录").click();
-
-  cy.get(".ant-breadcrumb:contains('首页')").should("be.visible");
-
-  // cy.on("url:changed", (url) => {
-  //   console.log("url>>>>", url);
-  //   if (url.indexOf("#/ws/Geely/home") > -1) {
-  //     window.location.hash = "/test";
-  //   }
-  // });
-
-  cy.wait(3000);
+  login();
   cy.window().then((window) => {
     window.location.hash = "/test";
   });
 
   cy.contains("添加条件组").click();
 });
-describe("The Home Page", () => {
-  it("basic property text", () => {
-    cy.get(".ant-input.ant-cascader-input").click();
-    cy.contains("属性字段").click();
-    cy.contains("名称").click();
-    cy.contains("查 询").click();
-
-    cy.get(".logical-filter.logical-filter-level-2")
-      .parent()
-      .should("have.class", "show-error-status");
-    cy.get(".ant-input.show-error").type("testEmail");
-    cy.contains("查 询").click();
-    cy.get(".logical-filter.logical-filter-level-2")
-      .parent()
-      .should("not.have.class", "show-error-status");
-  });
-
+describe("The filter date", () => {
   it("basic property date 昨 日", () => {
     clickBirthday();
 
@@ -669,7 +641,7 @@ describe("The Home Page", () => {
     });
   });
 
-  it.only("operator = between 绝对时间 2021-08-18 - 2021-09-15", () => {
+  it("operator = between 绝对时间 2021-08-18 - 2021-09-15", () => {
     clickBirthday();
     cy.get(
       ".ant-row > :nth-child(2) > .ant-select > .ant-select-selector > .ant-select-selection-item"
