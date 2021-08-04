@@ -1,14 +1,13 @@
 /// <reference types="cypress" />
 
+import { login, gotToComputeValueTraitDetail } from "./utils";
+
 describe("计算值标签 - 限制条件", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/data/index.html");
-    cy.get("#username").type("24");
-    cy.get("#password").type("Focuson789");
-    cy.contains("登 录").click();
+    login();
+    gotToComputeValueTraitDetail();
 
-    cy.wait(3000);
-
+    cy.contains("编辑公式").click();
     cy.contains("添加变量").click();
   });
 
