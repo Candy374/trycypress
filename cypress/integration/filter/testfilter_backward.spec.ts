@@ -2,7 +2,7 @@
 
 import { login } from "../utils";
 
-before(() => {
+beforeEach(() => {
   login();
 
   cy.contains("吉利汽车").click();
@@ -14,7 +14,7 @@ before(() => {
   cy.contains("添加条件组").click();
 });
 
-describe("The Filter level2", () => {
+describe("The Filter 车主", () => {
   it("名称包含杰", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
@@ -27,7 +27,7 @@ describe("The Filter level2", () => {
     cy.contains("杰哥").should("be.visible");
   });
 
-  it("查找 我的爱车  默认选中不为空", () => {
+  it("查找 我的爱车 默认选中不为空 -> 为空", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
     selectField(["属性字段", "我的爱车"]);
@@ -44,21 +44,54 @@ describe("The Filter level2", () => {
     cy.contains("曹立").should("be.visible");
   });
 
-  it("查找 我的爱车  默认选中不为空", () => {
+  it("查找 我的爱车 业务单据 状态成功", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
     selectField(["属性字段", "我的爱车"]);
-    selectConstraint("属性字段");
+    selectConstraint("业务单据");
 
-    cy.get('[data-ta-key="属性字段"]').find(`[data-ta-type="field"]`).click();
-    selectField(["名称"]);
-    selectOperator("不包含", cy.get('[data-ta-key="属性字段"]'));
+    cy.get('[data-ta-key="业务单据"]').find(`[data-ta-type="field"]`).click();
+    selectField(["商品名称"]);
+
+    cy.get('[data-ta-key="业务单据"]')
+      .find('[data-ta-key="属性字段"]')
+      .find(`[data-ta-type="field"]`)
+      .click();
+    selectField(["状态"]);
     cy.get('[data-ta-key="属性字段"]')
       .find('[data-ta-type="text"]')
-      .type("平价版");
+      .type("成功");
     cy.contains("查 询").click();
-    cy.contains("龙哥").should("be.visible");
+    cy.contains("杰哥").should("be.visible");
+
+    selectConstraint("统计指标", cy.get('[data-ta-key="业务单据"]'));
+    cy.get('[data-ta-key="业务单据"]')
+      .find('[data-ta-key="统计指标"]')
+      .find(`[data-ta-type="field"]`)
+      .click();
+
+    selectField(["发生时间"]);
+    selectOperator(
+      "为空",
+      cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="统计指标"]')
+    );
+
+    cy.contains("查 询").click();
     cy.contains("杰哥").should("not.exist");
+  });
+
+  it("标签 有钱", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["标签"]);
+    cy.get(`[data-ta-key="trait_id"]`).click();
+    selectInSelectDropdown("有钱");
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="delete"]')
+      .click({ force: true });
+
+    cy.contains("查 询").click();
+    cy.contains("杰哥").should("be.visible");
   });
 });
 
@@ -79,16 +112,27 @@ function selectField(values: string[]) {
   cascader.should("not.be.visible");
 }
 
-function selectOperator(operator, parent: any = cy) {
-  parent.find(`[data-ta-type="operator"]`).click();
-  cy.get(".ant-select-dropdown:not(.ant-select-dropdown-hidden)")
-    .contains(operator)
-    .click();
+function selectOperator(operator, parent?) {
+  if (parent) {
+    parent.find(`[data-ta-type="operator"]`).click();
+  } else {
+    cy.get(`[data-ta-type="operator"]`).click();
+  }
+
+  selectInSelectDropdown(operator);
 }
 
-function selectConstraint(constraint) {
-  cy.contains("添加限制条件").click();
-  cy.get(".ant-dropdown:not(.ant-dropdown-hidden)")
-    .contains(constraint)
+function selectConstraint(constraint, parent: any = cy) {
+  parent.contains("添加限制条件").click();
+  selectInDropdown(constraint);
+}
+
+function selectInDropdown(text) {
+  cy.get(".ant-dropdown:not(.ant-dropdown-hidden)").contains(text).click();
+}
+
+function selectInSelectDropdown(text) {
+  cy.get(".ant-select-dropdown:not(.ant-select-dropdown-hidden)")
+    .contains(text)
     .click();
 }
