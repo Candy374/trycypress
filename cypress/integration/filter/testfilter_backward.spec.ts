@@ -118,7 +118,7 @@ describe("The Filter 车主", () => {
     cy.contains("龙哥").should("be.visible");
   });
 
-  it.only("（反查-普通）买卖关系 车主不为空", () => {
+  it("（反查-普通）买卖关系 车主不为空", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
     selectField(["其他关联表", "买卖关系"]);
@@ -134,6 +134,70 @@ describe("The Filter 车主", () => {
 
     cy.contains("查 询").click();
     cy.contains("杰哥").should("be.visible");
+  });
+
+  it("（反查-普通）买卖关系 车主不为空", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["属性字段", "所属销售"]);
+    selectConstraint("属性字段");
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
+    selectField(["所属经销商"]);
+
+    cy.get('[data-ta-key="属性字段"]').contains("限制属性字段").click();
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]').click();
+    selectField(["名称"]);
+    selectOperator(
+      "包含",
+      cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]')
+    );
+
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="属性字段"]')
+      .find('[data-ta-type="text"]')
+      .type("一店");
+
+    cy.contains("查 询").click();
+    cy.contains("杰哥").should("be.visible");
+  });
+
+  it.only("（反查-查找-反查）所属经销商", () => {
+    cy.window().then((window) => {
+      window.location.hash = "/ws/ui_automation/dwData/dw_sales/list_page";
+    });
+    cy.wait(3000);
+    cy.contains("添加条件组").click();
+
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["属性字段", "所属经销商"]);
+    selectConstraint("业务单据");
+    cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="field"]').click();
+    selectField(["流水账"]);
+
+    selectConstraint("统计指标", cy.get('[data-ta-key="业务单据"]'));
+    cy.get('[data-ta-key="业务单据"]')
+      .find('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="delete"]')
+      .click({ force: true });
+
+    cy.get('[data-ta-key="业务单据"]')
+      .find('[data-ta-key="统计指标"]')
+      .find('[data-ta-type="aggregation"]')
+      .click();
+    selectInSelectDropdown("COUNT(次数)");
+    selectOperator(
+      "大于(含)",
+      cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="统计指标"]')
+    );
+
+    cy.get('[data-ta-key="业务单据"]')
+      .find('[data-ta-key="统计指标"]')
+      .find('[data-ta-type="number"]')
+      .type("1");
+
+    cy.contains("查 询").click();
+    cy.contains("小包").should("be.visible");
   });
 });
 
