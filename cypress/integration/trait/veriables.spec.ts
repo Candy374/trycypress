@@ -204,11 +204,10 @@ function testTemplate({
   data: any;
 }) {
   let i = 1;
+  const fields = cy.get(`[data-ta-type="field"]`);
   for (const values of clickValues) {
-    cy.get(`:nth-child(${i}) > .ant-cascader-picker > .ant-input`).should(
-      "be.visible"
-    );
-    cy.get(`:nth-child(${i}) > .ant-cascader-picker > .ant-input`).click();
+    fields[i].should("be.visible");
+    fields[i].click();
 
     for (const value of values) {
       cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")

@@ -93,6 +93,48 @@ describe("The Filter 车主", () => {
     cy.contains("查 询").click();
     cy.contains("杰哥").should("be.visible");
   });
+
+  it("（反查-查找-普通） 买卖关系 车主不为空", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["其他关联表", "买卖关系"]);
+
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
+    selectField(["车主"]);
+
+    cy.get('[data-ta-key="属性字段"]').contains("限制属性字段").click();
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]').click();
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="field"]')
+      .click();
+    selectField(["名称"]);
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="属性字段"]')
+      .find('[data-ta-type="text"]')
+      .type("龙哥");
+
+    cy.contains("查 询").click();
+    cy.contains("龙哥").should("be.visible");
+  });
+
+  it.only("（反查-普通）买卖关系 车主不为空", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["其他关联表", "买卖关系"]);
+
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
+    selectField(["关系名称"]);
+
+    selectOperator("包含", cy.get('[data-ta-key="属性字段"]'));
+
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-type="text"]')
+      .type("第二次");
+
+    cy.contains("查 询").click();
+    cy.contains("杰哥").should("be.visible");
+  });
 });
 
 function selectField(values: string[]) {
@@ -101,9 +143,6 @@ function selectField(values: string[]) {
   );
 
   for (const value of values) {
-    cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")
-      .contains(value)
-      .should("be.visible");
     cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")
       .contains(value)
       .click();
