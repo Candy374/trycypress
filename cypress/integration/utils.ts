@@ -1,10 +1,10 @@
 export function login() {
-  cy.visit("http://localhost:3000/data/index.html");
+  cy.visit("http://localhost:3000/data/login.html");
   cy.get("#username").type("24");
   cy.get("#password").type("Focuson789");
   cy.contains("登 录").click();
-
-  cy.get(".ant-breadcrumb:contains('首页')").should("be.visible");
+  // cy.wait(3000);
+  // cy.get(".ant-breadcrumb:contains('首页')").should("be.visible");
 
   cy.wait(3000);
   Cypress.on("uncaught:exception", (err) => {

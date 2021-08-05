@@ -136,7 +136,7 @@ describe("The Filter 车主", () => {
     cy.contains("杰哥").should("be.visible");
   });
 
-  it("（反查-普通）买卖关系 车主不为空", () => {
+  it("（查找-查找）客户 销售 经销商", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
     selectField(["属性字段", "所属销售"]);
@@ -161,7 +161,7 @@ describe("The Filter 车主", () => {
     cy.contains("杰哥").should("be.visible");
   });
 
-  it.only("（反查-查找-反查）所属经销商", () => {
+  it("（查找-反查）销售 经销商 订单", () => {
     cy.window().then((window) => {
       window.location.hash = "/ws/ui_automation/dwData/dw_sales/list_page";
     });
@@ -198,6 +198,54 @@ describe("The Filter 车主", () => {
 
     cy.contains("查 询").click();
     cy.contains("小包").should("be.visible");
+  });
+
+  it.only("（反查-查找）车主 关注公众号", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["行为事件", "售前相关事件"]);
+    cy.get('[data-ta-key="_event_type"]').click();
+    selectInSelectDropdown("关注公众号");
+
+    selectConstraint("统计指标");
+
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-key="delete"]')
+      .click({ force: true });
+
+    cy.get('[data-ta-key="统计指标"]')
+      .find('[data-ta-type="aggregation"]')
+      .click();
+    selectInSelectDropdown("COUNT(次数)");
+    selectOperator("大于(含)", cy.get('[data-ta-key="统计指标"]'));
+
+    cy.get('[data-ta-key="统计指标"]')
+      .find('[data-ta-type="number"]')
+      .type("1");
+
+    cy.contains("查 询").click();
+    cy.contains("曹立").should("be.visible");
+  });
+
+  it("（查找-反查）车主 公司 业务单据", () => {
+    cy.get(`[data-ta-type="field"]`).click();
+
+    selectField(["属性字段", "上家公司"]);
+
+    selectConstraint("业务单据");
+
+    cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="field"]').click();
+    selectField(["买车车"]);
+
+    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
+    selectField(["状态"]);
+
+    cy.get('[data-ta-key="属性字段"]')
+      .find('[data-ta-type="text"]')
+      .type("成功");
+
+    cy.contains("查 询").click();
+    cy.contains("麦麦").should("be.visible");
   });
 });
 
