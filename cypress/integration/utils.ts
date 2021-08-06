@@ -1,5 +1,5 @@
 export function login() {
-  cy.visit("https://data.dmhub.cn/data/login.html");
+  cy.visit("http://localhost:3000/data/index.html");
   cy.get("#username").type("24");
   cy.get("#password").type("Focuson789");
   cy.contains("登 录").click();

@@ -3,5 +3,9 @@
   "viewportWidth": 1800,
   "viewportHeight": 1260,
   "projectId": "citbmu",
-  "ignoreTestFiles": "*.spec.js"
+  "ignoreTestFiles": "*.spec.js",
+  "retries": {
+    "runMode": 3,
+    "openMode": 1
+  }
 }

@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-import { symbolName } from "typescript";
 import { login } from "../utils";
 
 let SESSION;
@@ -11,286 +10,193 @@ describe("The Filter 车主", () => {
     cy.contains("吉利汽车").click();
     cy.contains("前端UI自动化").click();
 
-    cy.window().then((window) => {
-      window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
-    });
-    cy.wait(1000);
+    // cy.window().then((window) => {
+    //   window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
+    // });
+    // cy.wait(1000);
     cy.getCookie("SESSION").then((x) => {
       SESSION = x;
     });
+    // cy.contains("添加条件组").click();
   });
 
   beforeEach(() => {
     cy.setCookie("SESSION", SESSION.value);
+    clickMenu(["数据存储", "模型表"]);
+    cy.wait(1000);
+    searchEntity("车主");
+    getTableValue("车主").click();
     cy.contains("添加条件组").click();
   });
 
-  afterEach(() => {
-    cy.get('[data-ta-key="delete"]').first().click({ force: true });
-    clickInPopover();
-  });
-
   it("名称包含杰", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["属性字段", "名称"]);
-    selectOperator("包含");
-
-    cy.get('[data-ta-type="text"]').type("杰");
-
-    cy.contains("查 询").click();
+    selectInGroupCascader(["属性字段", "名称"]);
+    setBasicProperty({ operator: "包含", taKey: "text", value: "杰" });
+    startSearch();
     cy.contains("杰哥").should("be.visible");
   });
 
   it("查找 我的爱车 默认选中不为空 -> 为空", () => {
-    cy.get(`[data-ta-type="field"]`).click();
+    selectInGroupCascader(["属性字段", "我的爱车"]);
 
-    selectField(["属性字段", "我的爱车"]);
-    cy.get('[data-ta-key="notEmpty"]').should("be.visible");
-    cy.get('[data-ta-key="notEmpty"]').should("be.visible");
+    getOperator().contains("不为空").should("be.visible");
     cy.contains("特斯拉").should("be.visible");
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("be.visible");
-    cy.contains("龙哥").should("be.visible");
-    cy.contains("曹立").should("be.visible");
 
-    selectOperator("为空");
-    cy.contains("查 询").click();
-    cy.contains("曹立").should("be.visible");
+    startSearch();
+    checkTableData(["杰哥", "龙哥"]);
+
+    setBasicProperty({ operator: "为空" });
+    startSearch();
+    checkTableData(["曹立"]);
   });
 
   it("查找 我的爱车 业务单据 状态成功", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["属性字段", "我的爱车"]);
+    selectInGroupCascader(["属性字段", "我的爱车"]);
     selectConstraint("业务单据");
 
-    cy.get('[data-ta-key="业务单据"]').find(`[data-ta-type="field"]`).click();
-    selectField(["商品名称"]);
+    selectInGroupCascader(["商品名称"], ["业务单据"]);
+    selectInGroupCascader(["状态"], ["业务单据", "属性字段"]);
 
-    cy.get('[data-ta-key="业务单据"]')
-      .find('[data-ta-key="属性字段"]')
-      .find(`[data-ta-type="field"]`)
-      .click();
-    selectField(["状态"]);
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-type="text"]')
-      .type("成功");
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("be.visible");
+    setBasicProperty({
+      taKey: "text",
+      value: "成功",
+      parentKeys: ["业务单据", "属性字段"],
+    });
 
-    selectConstraint("统计指标", cy.get('[data-ta-key="业务单据"]'));
-    cy.get('[data-ta-key="业务单据"]')
-      .find('[data-ta-key="统计指标"]')
-      .find(`[data-ta-type="field"]`)
-      .click();
+    startSearch();
+    checkTableData(["杰哥"]);
 
-    selectField(["发生时间"]);
-    selectOperator(
-      "为空",
-      cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="统计指标"]')
-    );
+    selectConstraint("统计指标", ["业务单据"]);
+    selectInGroupCascader(["发生时间"], ["业务单据", "统计指标"]);
+    setBasicProperty({
+      operator: "为空",
+      parentKeys: ["业务单据", "统计指标"],
+    });
 
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("not.exist");
+    startSearch();
+    checkTableDataNotExist(["杰哥"]);
   });
 
   it("标签 有钱", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["标签"]);
-    cy.get(`[data-ta-key="trait_id"]`).click();
-    selectInSelectDropdown("有钱");
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="delete"]')
-      .click({ force: true });
-
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("be.visible");
+    selectInGroupCascader(["标签"]);
+    selectInTableDetail("有钱");
+    removeCondition(["属性字段"]);
+    startSearch();
+    checkTableData(["杰哥"]);
   });
 
   it("（反查-查找-普通） 买卖关系 车主不为空", () => {
-    cy.get(`[data-ta-type="field"]`).click();
+    selectInGroupCascader(["其他关联表", "买卖关系"]);
+    selectInGroupCascader(["车主"], ["属性字段"]);
+    clickConstraint(["属性字段"]);
+    selectInGroupCascader(["名称"], ["属性字段", "属性字段"]);
 
-    selectField(["其他关联表", "买卖关系"]);
+    setBasicProperty({
+      parentKeys: ["属性字段"],
+      taKey: "text",
+      value: "龙哥",
+    });
 
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
-    selectField(["车主"]);
-
-    cy.get('[data-ta-key="属性字段"]').contains("限制属性字段").click();
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]').click();
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="field"]')
-      .click();
-    selectField(["名称"]);
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="属性字段"]')
-      .find('[data-ta-type="text"]')
-      .type("龙哥");
-
-    cy.contains("查 询").click();
-    cy.contains("龙哥").should("be.visible");
+    startSearch();
+    checkTableData(["龙哥"]);
   });
 
   it("（反查-普通）买卖关系 车主不为空", () => {
-    cy.get(`[data-ta-type="field"]`).click();
+    selectInGroupCascader(["其他关联表", "买卖关系"]);
 
-    selectField(["其他关联表", "买卖关系"]);
+    selectInGroupCascader(["关系名称"], ["属性字段"]);
 
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
-    selectField(["关系名称"]);
-
-    selectOperator("包含", cy.get('[data-ta-key="属性字段"]'));
-
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-type="text"]')
-      .type("第二次");
-
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("be.visible");
+    setBasicProperty({
+      operator: "包含",
+      taKey: "text",
+      value: "第二次",
+    });
+    startSearch();
+    checkTableData(["杰哥"]);
   });
 
   it("（查找-查找）客户 销售 经销商", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["属性字段", "所属销售"]);
+    selectInGroupCascader(["属性字段", "所属销售"]);
     selectConstraint("属性字段");
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
-    selectField(["所属经销商"]);
-
-    cy.get('[data-ta-key="属性字段"]').contains("限制属性字段").click();
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]').click();
-    selectField(["名称"]);
-    selectOperator(
-      "包含",
-      cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="属性字段"]')
-    );
-
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="属性字段"]')
-      .find('[data-ta-type="text"]')
-      .type("一店");
-
-    cy.contains("查 询").click();
-    cy.contains("杰哥").should("be.visible");
-  });
-
-  it("（查找-反查）销售 经销商 订单", () => {
-    cy.window().then((window) => {
-      window.location.hash = "/ws/ui_automation/dwData/dw_sales/list_page";
+    selectInGroupCascader(["所属经销商"], ["属性字段"]);
+    clickConstraint(["属性字段"]);
+    selectInGroupCascader(["名称"], ["属性字段", "属性字段"]);
+    setBasicProperty({
+      operator: "包含",
+      parentKeys: ["属性字段", "属性字段"],
+      taKey: "text",
+      value: "一店",
     });
-    cy.wait(3000);
-    cy.contains("添加条件组").click();
 
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["属性字段", "所属经销商"]);
-    selectConstraint("业务单据");
-    cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="field"]').click();
-    selectField(["流水账"]);
-
-    selectConstraint("统计指标", cy.get('[data-ta-key="业务单据"]'));
-    cy.get('[data-ta-key="业务单据"]')
-      .find('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="delete"]')
-      .click({ force: true });
-
-    cy.get('[data-ta-key="业务单据"]')
-      .find('[data-ta-key="统计指标"]')
-      .find('[data-ta-type="aggregation"]')
-      .click();
-    selectInSelectDropdown("COUNT(次数)");
-    selectOperator(
-      "大于(含)",
-      cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="统计指标"]')
-    );
-
-    cy.get('[data-ta-key="业务单据"]')
-      .find('[data-ta-key="统计指标"]')
-      .find('[data-ta-type="number"]')
-      .type("1");
-
-    cy.contains("查 询").click();
-    cy.contains("小包").should("be.visible");
+    startSearch();
+    checkTableData(["杰哥"]);
   });
 
   it("（反查-查找）车主 关注公众号", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["行为事件", "售前相关事件"]);
-    cy.get('[data-ta-key="_event_type"]').click();
-    selectInSelectDropdown("关注公众号");
-
+    selectInGroupCascader(["行为事件", "售前相关事件"]);
+    selectInTableDetail("关注公众号");
     selectConstraint("统计指标");
+    removeCondition(["属性字段"]);
 
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-key="delete"]')
-      .click({ force: true });
+    selectInAggregation("COUNT(次数)");
 
-    cy.get('[data-ta-key="统计指标"]')
-      .find('[data-ta-type="aggregation"]')
-      .click();
-    selectInSelectDropdown("COUNT(次数)");
-    selectOperator("大于(含)", cy.get('[data-ta-key="统计指标"]'));
+    setBasicProperty({
+      operator: "大于(含)",
+      parentKeys: ["统计指标"],
+      taKey: "number",
+      value: "1",
+    });
 
-    cy.get('[data-ta-key="统计指标"]')
-      .find('[data-ta-type="number"]')
-      .type("1");
-
-    cy.contains("查 询").click();
-    cy.contains("曹立").should("be.visible");
+    startSearch();
+    checkTableData(["曹立"]);
   });
 
   it("（查找-反查）车主 公司 业务单据", () => {
-    cy.get(`[data-ta-type="field"]`).click();
-
-    selectField(["属性字段", "上家公司"]);
-
+    selectInGroupCascader(["属性字段", "上家公司"]);
     selectConstraint("业务单据");
+    selectInGroupCascader(["买车车"], ["业务单据"]);
+    selectInGroupCascader(["状态"], ["业务单据", "属性字段"]);
+    setBasicProperty({
+      parentKeys: ["属性字段"],
+      taKey: "text",
+      value: "成功",
+    });
+    startSearch();
+    checkTableData(["麦麦"]);
+  });
 
-    cy.get('[data-ta-key="业务单据"]').find('[data-ta-key="field"]').click();
-    selectField(["买车车"]);
+  it("（查找-反查）销售 经销商 订单", () => {
+    clickMenu(["数据存储", "模型表"]);
+    cy.wait(1000);
+    searchEntity("销售");
+    cy.get(`[data-row-key="dw_sales"]`).contains("销售").click();
+    cy.contains("添加条件组").click();
 
-    cy.get('[data-ta-key="属性字段"]').find('[data-ta-key="field"]').click();
-    selectField(["状态"]);
+    selectInGroupCascader(["属性字段", "所属经销商"]);
+    selectConstraint("业务单据");
+    selectInGroupCascader(["流水账"], ["业务单据"]);
+    selectConstraint("统计指标", ["业务单据"]);
+    removeCondition(["业务单据", "属性字段"]);
+    selectInAggregation("COUNT(次数");
 
-    cy.get('[data-ta-key="属性字段"]')
-      .find('[data-ta-type="text"]')
-      .type("成功");
-
-    cy.contains("查 询").click();
-    cy.contains("麦麦").should("be.visible");
+    setBasicProperty({
+      operator: "大于(含)",
+      parentKeys: ["业务单据", "统计指标"],
+      taKey: "number",
+      value: "1",
+    });
+    startSearch();
+    checkTableData(["小包"]);
   });
 });
 
-function selectField(values: string[]) {
-  const cascader = cy.get(
-    ".ant-cascader-menus:not(.ant-cascader-menus-hidden)"
-  );
-
-  for (const value of values) {
-    cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")
-      .contains(value)
-      .click();
-  }
-
-  cascader.should("not.be.visible");
-}
-
-function selectOperator(operator, parent?) {
-  if (parent) {
-    parent.find(`[data-ta-type="operator"]`).click();
-  } else {
-    cy.get(`[data-ta-type="operator"]`).click();
-  }
-
-  selectInSelectDropdown(operator);
-}
-
-function selectConstraint(constraint, parent: any = cy) {
-  parent.contains("添加限制条件").click();
+function selectConstraint(constraint, parentKeys?: string[]) {
+  clickConstraint(parentKeys);
   selectInDropdown(constraint);
+}
+
+function clickConstraint(parentKeys?: string[]) {
+  getByTaKey("constraint", parentKeys).click();
 }
 
 function selectInDropdown(text) {
@@ -305,4 +211,111 @@ function selectInSelectDropdown(text) {
 
 function clickInPopover(text = "确 定") {
   cy.get(".ant-popover:not(.ant-popover-hidden)").contains(text).click();
+}
+
+function selectInGroupCascader(values: string[], parentKeys?: string[]) {
+  getByTaKey("field", parentKeys).click();
+
+  const cascader = cy.get(
+    ".ant-cascader-menus:not(.ant-cascader-menus-hidden)"
+  );
+
+  for (const value of values) {
+    cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")
+      .contains(value)
+      .click();
+  }
+
+  cascader.should("not.be.visible");
+}
+
+function getByTaKey(taKey: string, parentKeys?: string[]) {
+  const taKeys = (parentKeys || []).concat([taKey]);
+  let i = 0;
+  let cyObject;
+  for (const key of taKeys) {
+    if (i == 0) {
+      cyObject = cy.get(`[data-ta-key="${key}"]`);
+    } else {
+      cyObject = cyObject.find(`[data-ta-key="${key}"]`);
+    }
+    i++;
+  }
+  return cyObject.first();
+}
+
+function getOperator(parentKeys?: string[]) {
+  return getByTaKey("operator", parentKeys);
+}
+
+function setBasicProperty({
+  operator,
+  parentKeys,
+  taKey,
+  value,
+}: {
+  parentKeys?: string[];
+  operator?: string;
+  taKey?: "text" | "number" | "tags";
+  value?: string;
+}) {
+  if (operator) {
+    getOperator(parentKeys).click();
+    selectInSelectDropdown(operator);
+  }
+
+  if (taKey) {
+    getByTaKey(taKey, parentKeys).type(value);
+  }
+}
+
+function removeCondition(parentKeys?: string[], hasPopup?: boolean) {
+  getByTaKey("delete", parentKeys).click({ force: true });
+
+  if (hasPopup) {
+    clickInPopover();
+  }
+}
+
+function startSearch() {
+  cy.contains("查 询").click();
+}
+
+function checkTableData(values: string[]) {
+  for (const value of values) {
+    getTableValue(value).should("be.visible");
+  }
+}
+
+function getTableValue(value: string) {
+  return cy.get(".ant-table").contains(value);
+}
+
+function checkTableDataNotExist(values: string[]) {
+  for (const value of values) {
+    getTableValue(value).should("not.exist");
+  }
+}
+
+function selectInTableDetail(text: string) {
+  cy.get(`[data-ta-key="table_detail"]`).click();
+  selectInSelectDropdown(text);
+}
+
+function selectInAggregation(text, parentKeys?: string[]) {
+  getByTaKey("aggregation", parentKeys).click();
+
+  selectInSelectDropdown(text);
+}
+
+function clickMenu(menus: string[]) {
+  for (const menu of menus) {
+    getByTaKey(menu).click();
+  }
+}
+
+function searchEntity(text) {
+  const cyObject = getByTaKey("search");
+  cyObject.type(text);
+  cyObject.parents(".ant-input-search").find('[type="button"]').click();
 }
