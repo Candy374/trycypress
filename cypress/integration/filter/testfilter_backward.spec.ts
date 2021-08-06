@@ -10,7 +10,7 @@ beforeEach(() => {
   cy.window().then((window) => {
     window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
   });
-  cy.wait(3000);
+  // cy.wait(3000);
   cy.contains("添加条件组").click();
 });
 
@@ -200,7 +200,7 @@ describe("The Filter 车主", () => {
     cy.contains("小包").should("be.visible");
   });
 
-  it.only("（反查-查找）车主 关注公众号", () => {
+  it("（反查-查找）车主 关注公众号", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
     selectField(["行为事件", "售前相关事件"]);
