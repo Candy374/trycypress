@@ -1,20 +1,35 @@
 /// <reference types="cypress" />
 
+import { symbolName } from "typescript";
 import { login } from "../utils";
 
-beforeEach(() => {
-  login();
-
-  cy.contains("吉利汽车").click();
-  cy.contains("前端UI自动化").click();
-  cy.window().then((window) => {
-    window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
-  });
-  // cy.wait(3000);
-  cy.contains("添加条件组").click();
-});
-
+let SESSION;
 describe("The Filter 车主", () => {
+  before(() => {
+    login();
+
+    cy.contains("吉利汽车").click();
+    cy.contains("前端UI自动化").click();
+
+    cy.window().then((window) => {
+      window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
+    });
+    cy.wait(1000);
+    cy.getCookie("SESSION").then((x) => {
+      SESSION = x;
+    });
+  });
+
+  beforeEach(() => {
+    cy.setCookie("SESSION", SESSION.value);
+    cy.contains("添加条件组").click();
+  });
+
+  afterEach(() => {
+    cy.get('[data-ta-key="delete"]').first().click({ force: true });
+    clickInPopover();
+  });
+
   it("名称包含杰", () => {
     cy.get(`[data-ta-type="field"]`).click();
 
@@ -286,4 +301,8 @@ function selectInSelectDropdown(text) {
   cy.get(".ant-select-dropdown:not(.ant-select-dropdown-hidden)")
     .contains(text)
     .click();
+}
+
+function clickInPopover(text = "确 定") {
+  cy.get(".ant-popover:not(.ant-popover-hidden)").contains(text).click();
 }
