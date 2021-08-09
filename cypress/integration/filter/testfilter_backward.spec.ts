@@ -3,13 +3,23 @@
 import {
   checkTableData,
   checkTableDataNotExist,
-  clickInPopover,
   getTableValue,
   login,
-  selectInDropdown,
-  selectInSelectDropdown,
   Session,
 } from "../utils";
+import {
+  clickMenu,
+  searchEntity,
+  selectInGroupCascader,
+  setBasicProperty,
+  startSearch,
+  getOperator,
+  selectConstraint,
+  selectInTableDetail,
+  removeCondition,
+  clickConstraint,
+  selectInAggregation,
+} from "./utils";
 
 describe("The Filter 车主", () => {
   before(() => {
@@ -185,103 +195,3 @@ describe("The Filter 车主", () => {
     checkTableData(["小包"]);
   });
 });
-
-function selectConstraint(constraint, parentKeys?: string[]) {
-  clickConstraint(parentKeys);
-  selectInDropdown(constraint);
-}
-
-function clickConstraint(parentKeys?: string[]) {
-  getByTaKey("constraint", parentKeys).click();
-}
-
-function selectInGroupCascader(values: string[], parentKeys?: string[]) {
-  getByTaKey("field", parentKeys).click();
-
-  const cascader = cy.get(
-    ".ant-cascader-menus:not(.ant-cascader-menus-hidden)"
-  );
-
-  for (const value of values) {
-    cy.get(".ant-cascader-menus:not(.ant-cascader-menus-hidden)")
-      .contains(value)
-      .click();
-  }
-
-  cascader.should("not.be.visible");
-}
-
-function getByTaKey(taKey: string, parentKeys?: string[]) {
-  const taKeys = (parentKeys || []).concat([taKey]);
-  let i = 0;
-  let cyObject;
-  for (const key of taKeys) {
-    if (i == 0) {
-      cyObject = cy.get(`[data-ta-key="${key}"]`);
-    } else {
-      cyObject = cyObject.find(`[data-ta-key="${key}"]`);
-    }
-    i++;
-  }
-  return cyObject.first();
-}
-
-function getOperator(parentKeys?: string[]) {
-  return getByTaKey("operator", parentKeys);
-}
-
-function setBasicProperty({
-  operator,
-  parentKeys,
-  taKey,
-  value,
-}: {
-  parentKeys?: string[];
-  operator?: string;
-  taKey?: "text" | "number" | "tags";
-  value?: string;
-}) {
-  if (operator) {
-    getOperator(parentKeys).click();
-    selectInSelectDropdown(operator);
-  }
-
-  if (taKey) {
-    getByTaKey(taKey, parentKeys).type(value);
-  }
-}
-
-function removeCondition(parentKeys?: string[], hasPopup?: boolean) {
-  getByTaKey("delete", parentKeys).click({ force: true });
-
-  if (hasPopup) {
-    clickInPopover();
-  }
-}
-
-function startSearch() {
-  cy.contains("查 询").click();
-}
-
-function selectInTableDetail(text: string) {
-  cy.get(`[data-ta-key="table_detail"]`).click();
-  selectInSelectDropdown(text);
-}
-
-function selectInAggregation(text, parentKeys?: string[]) {
-  getByTaKey("aggregation", parentKeys).click();
-
-  selectInSelectDropdown(text);
-}
-
-function clickMenu(menus: string[]) {
-  for (const menu of menus) {
-    getByTaKey(menu).click();
-  }
-}
-
-function searchEntity(text) {
-  const cyObject = getByTaKey("search");
-  cyObject.type(text);
-  cyObject.parents(".ant-input-search").find('[type="button"]').click();
-}

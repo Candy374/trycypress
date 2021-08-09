@@ -6,6 +6,6 @@
   "ignoreTestFiles": "*.spec.js",
   "retries": {
     "runMode": 3,
-    "openMode": 1
+    "openMode": 0
   }
 }

@@ -47,8 +47,10 @@ export function selectInSelectDropdown(text) {
     .click();
 }
 
-export function clickInPopover(text = "确 定") {
+export function clickInPopover(text = "确 定", waitInVisible = true) {
   const cyObject = cy.get(".ant-popover:not(.ant-popover-hidden)");
   cyObject.contains(text).click();
-  cyObject.should("not.exist");
+  if (waitInVisible) {
+    cyObject.should("not.be.visible");
+  }
 }
