@@ -1,31 +1,27 @@
 /// <reference types="cypress" />
 
-import { login } from "../utils";
+import {
+  checkTableData,
+  checkTableDataNotExist,
+  clickInPopover,
+  getTableValue,
+  login,
+  selectInDropdown,
+  selectInSelectDropdown,
+  Session,
+} from "../utils";
 
-let SESSION;
 describe("The Filter 车主", () => {
   before(() => {
     login();
-
-    cy.contains("吉利汽车").click();
-    cy.contains("前端UI自动化").click();
-
-    // cy.window().then((window) => {
-    //   window.location.hash = "/ws/ui_automation/dwData/dw_car_owner/list_page";
-    // });
-    // cy.wait(1000);
-    cy.getCookie("SESSION").then((x) => {
-      SESSION = x;
-    });
-    // cy.contains("添加条件组").click();
   });
 
   beforeEach(() => {
-    cy.setCookie("SESSION", SESSION.value);
+    cy.setCookie("SESSION", Session.value);
     clickMenu(["数据存储", "模型表"]);
-    cy.wait(1000);
     searchEntity("车主");
     getTableValue("车主").click();
+    cy.contains("数据列表").click();
     cy.contains("添加条件组").click();
   });
 
@@ -167,9 +163,9 @@ describe("The Filter 车主", () => {
 
   it("（查找-反查）销售 经销商 订单", () => {
     clickMenu(["数据存储", "模型表"]);
-    cy.wait(1000);
     searchEntity("销售");
     cy.get(`[data-row-key="dw_sales"]`).contains("销售").click();
+    cy.contains("数据列表").click();
     cy.contains("添加条件组").click();
 
     selectInGroupCascader(["属性字段", "所属经销商"]);
@@ -197,20 +193,6 @@ function selectConstraint(constraint, parentKeys?: string[]) {
 
 function clickConstraint(parentKeys?: string[]) {
   getByTaKey("constraint", parentKeys).click();
-}
-
-function selectInDropdown(text) {
-  cy.get(".ant-dropdown:not(.ant-dropdown-hidden)").contains(text).click();
-}
-
-function selectInSelectDropdown(text) {
-  cy.get(".ant-select-dropdown:not(.ant-select-dropdown-hidden)")
-    .contains(text)
-    .click();
-}
-
-function clickInPopover(text = "确 定") {
-  cy.get(".ant-popover:not(.ant-popover-hidden)").contains(text).click();
 }
 
 function selectInGroupCascader(values: string[], parentKeys?: string[]) {
@@ -279,22 +261,6 @@ function removeCondition(parentKeys?: string[], hasPopup?: boolean) {
 
 function startSearch() {
   cy.contains("查 询").click();
-}
-
-function checkTableData(values: string[]) {
-  for (const value of values) {
-    getTableValue(value).should("be.visible");
-  }
-}
-
-function getTableValue(value: string) {
-  return cy.get(".ant-table").contains(value);
-}
-
-function checkTableDataNotExist(values: string[]) {
-  for (const value of values) {
-    getTableValue(value).should("not.exist");
-  }
 }
 
 function selectInTableDetail(text: string) {
