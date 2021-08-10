@@ -585,6 +585,35 @@ describe("The filter date", () => {
         },
       });
     });
+
+    it("operator = between 绝对时间 2021-08-18 01:02:03 - 2021-09-15 12:16:23", () => {
+      selectInGroupCascader(["属性字段", "系统创建时间"]);
+      setBasicProperty({ operator: "区间" });
+
+      getByTaKey("date").click();
+      cy.contains("相对时间").should("be.visible");
+      cy.contains("绝对时间").click();
+      clickInDateTimeRangeCalendar(
+        "2021-08-18 01:02:03",
+        "2021-09-15 12:16:23"
+      );
+
+      checkText("2021-08-18 01:02:03 ~ 2021-09-15 12:16:23");
+
+      checkData({
+        type: "filter",
+        filter: {
+          dataTable: "dw_car_owner",
+          operator: "between",
+          between: {
+            fieldExpression: "$_last_updated",
+            fieldExpressionValueLeft: "'2021-08-17T17:02:03Z'",
+            fieldExpressionValueRight: "'2021-09-15T04:16:23Z'",
+            field: "_last_updated",
+          },
+        },
+      });
+    });
   });
 });
 
@@ -600,8 +629,15 @@ function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
 
   clickInPopover("确 认", true);
 
-  getByTaKey("date").should("have.text", checkName);
+  checkText(checkName);
+  checkData(data);
+}
 
+function checkText(checkName: string) {
+  getByTaKey("date").should("have.text", checkName);
+}
+
+function checkData(data) {
   cy.contains("查 询").click();
 
   cy.intercept("POST", "/data/impala/gdm/dataTable/data/filter/*", (req) => {
@@ -611,13 +647,117 @@ function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
   });
 }
 
+function getByTaKeyAndType(taKey: string, taType: string) {
+  return cy.get(`[data-ta-key="${taKey}"][data-ta-type="${taType}"]`);
+}
+
 function clickInCalendar(text: string) {
-  cy.contains("16").click();
+  const [year, month, day] = text.split("-");
+
+  getByTaKeyAndType("date", "DatePicker").find(".ant-picker-year-btn").click();
+  getByTaKeyAndType("date", "DatePicker").find(`[title="${year}"]`).click();
+  getByTaKeyAndType("date", "DatePicker").find(".ant-picker-month-btn").click();
+  getByTaKeyAndType("date", "DatePicker")
+    .find(`[title="${year}-${month}"]`)
+    .click();
+  getByTaKeyAndType("date", "DatePicker")
+    .find(`[title="${year}-${month}-${day}"]`)
+    .click();
 }
 
 function clickInRangeCalendar(from: string, to: string) {
-  cy.get('[title="2021-08-18"]').click();
-  cy.get('[title="2021-09-15"]').click();
+  const [year, month] = from.split("-");
+
+  getByTaKeyAndType("date", "RangePicker")
+    .find(".ant-picker-date-panel")
+    .first()
+    .find(".ant-picker-year-btn")
+    .click();
+  getByTaKeyAndType("date", "RangePicker").find(`[title="${year}"]`).click();
+  getByTaKeyAndType("date", "RangePicker")
+    .find(".ant-picker-date-panel")
+    .first()
+    .find(".ant-picker-month-btn")
+    .click();
+  getByTaKeyAndType("date", "RangePicker")
+    .find(`[title="${year}-${month}"]`)
+    .click();
+  getByTaKeyAndType("date", "RangePicker")
+    .find(".ant-picker-date-panel")
+    .first()
+    .find(`[title="${from}"]`)
+    .click();
+
+  const [yearTo, monthTo] = to.split("-");
+
+  getByTaKeyAndType("date", "RangePicker")
+    .find(".ant-picker-date-panel")
+    .last()
+    .find(".ant-picker-year-btn")
+    .click();
+  getByTaKeyAndType("date", "RangePicker").find(`[title="${yearTo}"]`).click();
+  getByTaKeyAndType("date", "RangePicker")
+    .find(`[title="${yearTo}-${monthTo}"]`)
+    .click();
+  getByTaKeyAndType("date", "RangePicker").find(`[title="${to}"]`).click();
+}
+
+function clickInDateTimeRangeCalendar(from: string, to: string) {
+  const [date, time] = from.split(" ");
+  const [year, month, day] = date.split("-");
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(".ant-picker-year-btn")
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${year}"]`)
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(".ant-picker-month-btn")
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${year}-${month}"]`)
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${year}-${month}-${day}"]`)
+    .click();
+
+  time.split(":").forEach((value, i) => {
+    getByTaKeyAndType("dateTime", "RangePicker")
+      .find(".ant-picker-time-panel-column")
+      .eq(i)
+      .contains(value)
+      .click();
+  });
+
+  getByTaKeyAndType("dateTime", "RangePicker").find(".ant-picker-ok").click();
+
+  const [dateTo, timeTo] = to.split(" ");
+
+  const [yearTo, monthTo, dayTo] = dateTo.split("-");
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(".ant-picker-year-btn")
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${yearTo}"]`)
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(".ant-picker-month-btn")
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${yearTo}-${monthTo}"]`)
+    .click();
+  getByTaKeyAndType("dateTime", "RangePicker")
+    .find(`[title="${yearTo}-${monthTo}-${dayTo}"]`)
+    .click();
+
+  timeTo.split(":").forEach((value, i) => {
+    getByTaKeyAndType("dateTime", "RangePicker")
+      .find(".ant-picker-time-panel-column")
+      .eq(i)
+      .contains(value)
+      .click();
+  });
+  getByTaKeyAndType("dateTime", "RangePicker").find(".ant-picker-ok").click();
 }
 
 function selectXDate(text) {
