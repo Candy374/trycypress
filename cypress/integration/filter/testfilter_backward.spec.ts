@@ -19,6 +19,8 @@ import {
   removeCondition,
   clickConstraint,
   selectInAggregation,
+  checkApi,
+  injectApi,
 } from "./utils";
 
 describe("The Filter 车主", () => {
@@ -33,12 +35,22 @@ describe("The Filter 车主", () => {
     getTableValue("车主").click();
     cy.contains("数据列表").click();
     cy.contains("添加条件组").click();
+    injectApi();
   });
 
-  it("名称包含杰", () => {
+  it.only("名称包含杰", () => {
     selectInGroupCascader(["属性字段", "名称"]);
     setBasicProperty({ operator: "包含", taKey: "text", value: "杰" });
     startSearch();
+
+    checkApi({
+      type: "filter",
+      filter: {
+        dataTable: "dw_car_owner",
+        operator: "contain",
+        contain: { value: "杰", field: "_name" },
+      },
+    });
     cy.contains("杰哥").should("be.visible");
   });
 
@@ -49,10 +61,30 @@ describe("The Filter 车主", () => {
     cy.contains("特斯拉").should("be.visible");
 
     startSearch();
+
+    checkApi({
+      type: "filter",
+      filter: {
+        dataTable: "dw_car_owner",
+        operator: "notEmpty",
+        notEmpty: { field: "my_car" },
+      },
+    });
+
     checkTableData(["杰哥", "龙哥"]);
 
     setBasicProperty({ operator: "为空" });
     startSearch();
+
+    checkApi({
+      type: "filter",
+      filter: {
+        dataTable: "dw_car_owner",
+        operator: "empty",
+        notEmpty: { field: "my_car" },
+      },
+    });
+
     checkTableData(["曹立"]);
   });
 
@@ -70,6 +102,61 @@ describe("The Filter 车主", () => {
     });
 
     startSearch();
+
+    checkApi({
+      type: "filter",
+      filter: {
+        dataTable: "dw_car",
+        relationship: {
+          destinationField: "_id",
+          sourceTable: "dw_car_owner",
+          sourceField: "my_car",
+          relationType: "lookup",
+        },
+        type: "forwardRelationQuery",
+        forwardRelationQuery: {
+          dataTable: "dw_deal_detail_line",
+          relationship: {
+            destinationTable: "dw_car",
+            destinationField: "_id",
+            sourceField: "ticket",
+            relationType: "lookup",
+          },
+          type: "backwardRelationQuery",
+          backwardRelationQuery: {
+            logicalOperator: "and",
+            type: "logicalOperator",
+            filters: [
+              {
+                type: "filter",
+                filter: {
+                  dataTable: "dw_deal_detail_line",
+                  operator: "between",
+                  between: {
+                    fieldExpression:
+                      "date_trunc('DAY', from_utc_timestamp($_date_happened,'Asia/Shanghai'))",
+                    fieldExpressionValueLeft:
+                      "date_trunc('WEEK',date_sub(from_utc_timestamp(now(),'Asia/Shanghai'),7))",
+                    fieldExpressionValueRight:
+                      "date_trunc('WEEK', from_utc_timestamp(now(),'Asia/Shanghai'))",
+                    field: "_date_happened",
+                  },
+                },
+              },
+              {
+                type: "filter",
+                filter: {
+                  dataTable: "dw_deal_detail_line",
+                  operator: "equal",
+                  equal: { value: "成功", field: "_status" },
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+
     checkTableData(["杰哥"]);
 
     selectConstraint("统计指标", ["业务单据"]);

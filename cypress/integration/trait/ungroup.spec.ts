@@ -101,6 +101,6 @@ function createTrait(groupName?: string) {
 
 function deleteTrait(traitId) {
   cy.get(`[data-row-key="${traitId}"]`).contains("删除").click();
-  clickInPopover();
+  clickInPopover("确 定", true);
   cy.get(`[data-row-key="${traitId}"]`).contains("删除中");
 }

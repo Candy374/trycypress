@@ -100,3 +100,16 @@ export function searchEntity(text) {
   cyObject.type(text);
   cyObject.parents(".ant-input-search").find('[type="button"]').click();
 }
+
+export function injectApi() {
+  cy.intercept({
+    method: "POST",
+    url: "/data/impala/gdm/dataTable/data/filter/*",
+  }).as("apiCheck");
+}
+
+export function checkApi(filter: {}) {
+  cy.get("@apiCheck").its("request.body").should("deep.equal", {
+    filter,
+  });
+}

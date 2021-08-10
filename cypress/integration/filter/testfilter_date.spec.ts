@@ -1,19 +1,47 @@
 /// <reference types="cypress" />
 
-import { login } from "../utils";
+import {
+  clickInPopover,
+  getTableValue,
+  login,
+  selectInDropdown,
+  selectInSelectDropdown,
+  Session,
+} from "../utils";
+import {
+  checkApi,
+  clickMenu,
+  getByTaKey,
+  injectApi,
+  removeCondition,
+  searchEntity,
+  selectInGroupCascader,
+} from "./utils";
 
-before(() => {
-  login();
-  cy.window().then((window) => {
-    window.location.hash = "/test";
+describe("The filter date", () => {
+  before(() => {
+    login();
+    clickMenu(["数据存储", "模型表"]);
+    searchEntity("车主");
+    getTableValue("车主").click();
+    cy.contains("数据列表").click();
+
+    cy.get(".ant-spin").should("not.exist");
   });
 
-  cy.contains("添加条件组").click();
-});
-describe("The filter date", () => {
-  it("basic property date 昨 日", () => {
-    clickBirthday();
+  beforeEach(() => {
+    cy.setCookie("SESSION", Session.value);
+    injectApi();
+    cy.contains("添加条件组").click();
 
+    clickBirthday();
+  });
+
+  afterEach(() => {
+    removeCondition();
+  });
+
+  it("basic property date 昨 日", () => {
     testFilterTemplate({
       tabName: "相对时间",
       clickTarget: () => {
@@ -23,7 +51,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -41,16 +69,14 @@ describe("The filter date", () => {
     testFilterTemplate({
       tabName: "周期时间",
       clickTarget: () => {
-        cy.get(
-          "#rc-tabs-0-panel-range > :nth-child(5) > .ant-select > .ant-select-selector"
-        ).click();
-        cy.contains("周六").click();
+        getByTaKey("week").click();
+        selectInSelectDropdown("周 六");
       },
       checkName: "周 六",
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -67,16 +93,14 @@ describe("The filter date", () => {
     testFilterTemplate({
       tabName: "周期时间",
       clickTarget: () => {
-        cy.get(
-          "#rc-tabs-0-panel-range > :nth-child(3) > .ant-select > .ant-select-selector"
-        ).click();
-        cy.contains("10号").scrollIntoView().click();
+        getByTaKey("date").click();
+        cy.contains("10 号").scrollIntoView().click();
       },
-      checkName: "10号",
+      checkName: "10 号",
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -99,7 +123,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -125,7 +149,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -151,7 +175,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -177,7 +201,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -203,7 +227,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -234,7 +258,7 @@ describe("The filter date", () => {
     checkData({
       type: "filter",
       filter: {
-        dataTable: "dw_pq_profile",
+        dataTable: "dw_car_owner",
         operator: "equal",
         equal: {
           fieldExpression:
@@ -259,7 +283,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "equal",
           equal: {
             fieldExpression:
@@ -321,7 +345,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -354,7 +378,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -387,7 +411,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -420,7 +444,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -453,7 +477,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -486,7 +510,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -521,7 +545,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -556,7 +580,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -591,7 +615,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -625,7 +649,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -658,7 +682,7 @@ describe("The filter date", () => {
       data: {
         type: "filter",
         filter: {
-          dataTable: "dw_pq_profile",
+          dataTable: "dw_car_owner",
           operator: "between",
           between: {
             fieldExpression:
@@ -674,20 +698,17 @@ describe("The filter date", () => {
 });
 
 function clickBirthday() {
-  cy.get(".ant-input.ant-cascader-input").click();
-  cy.contains("属性字段").click();
-  cy.get(".ant-cascader-menu-item:contains('生日')").click();
+  selectInGroupCascader(["属性字段", "生日"]);
 }
 
 function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
-  // cy.get(".ant-btn:nth-child(4)").click();
   getDateSettingButton().click();
   cy.contains("相对时间").should("be.visible");
   cy.contains(tabName).click();
   clickTarget();
 
-  cy.contains("确 认").click();
-  cy.get(".ant-popover").should("not.be.visible");
+  clickInPopover("确 认", true);
+
   getDateSettingButton().should(($button) => {
     expect($button.text()).to.eq(checkName);
   });
@@ -696,16 +717,11 @@ function testFilterTemplate({ tabName, clickTarget, checkName, data }) {
 }
 
 function checkData(data) {
-  cy.contains("clear").click();
   cy.contains("查 询").click();
-
-  cy.get("#filter-value").should(($div) => {
-    const text = $div.text();
-
-    expect(JSON.parse(text)).to.deep.eq(data);
-  });
+  console.log("checking data:", data);
+  checkApi(data);
 }
 
 function getDateSettingButton() {
-  return cy.get(".can-delete-line > :nth-child(1) > .ant-row > .ant-btn");
+  return getByTaKey("date");
 }

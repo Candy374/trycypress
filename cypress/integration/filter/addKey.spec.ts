@@ -35,7 +35,7 @@ describe("添加key for logic filter", () => {
     cy.contains("添加条件").click();
     selectInGroupCascader(["行为事件", "相关事件"], [], 2);
 
-    removeCondition([], {});
+    removeCondition([], { waitInVisible: true });
 
     isExpand();
   });
@@ -46,7 +46,7 @@ describe("添加key for logic filter", () => {
     cy.contains("添加条件").click();
     selectInGroupCascader(["行为事件", "相关事件"], [], 2);
     getByTaKey("collapse", [], 1).click();
-    removeCondition([], {});
+    removeCondition([], { waitInVisible: true });
     isCollapsed();
   });
 
@@ -55,7 +55,7 @@ describe("添加key for logic filter", () => {
     cy.contains("添加条件").click();
     selectInGroupCascader(["行为事件", "相关事件"], [], 2);
     getByTaKey("collapse", [], 1).click();
-    removeCondition([], {});
+    removeCondition([], { waitInVisible: true });
     isCollapsed();
   });
 
@@ -63,7 +63,7 @@ describe("添加key for logic filter", () => {
     selectInGroupCascader(["行为事件", "相关事件"]);
     cy.contains("添加条件").click();
     selectInGroupCascader(["行为事件", "相关事件"], [], 2);
-    removeCondition([], {});
+    removeCondition([], { waitInVisible: true });
     isExpand();
   });
 });
