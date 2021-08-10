@@ -18,18 +18,18 @@ describe("添加key for logic filter", () => {
     searchEntity("车主");
     getTableValue("车主").click();
     cy.contains("数据列表").click();
-    cy.contains("添加条件组").click();
   });
 
   beforeEach(() => {
     cy.setCookie("SESSION", Session.value);
+    cy.contains("添加条件组").click();
   });
 
   afterEach(() => {
     removeCondition([], { waitInVisible: false });
   });
 
-  it("条件1收起， 条件2展开，删除条件1保持展开", () => {
+  it.only("条件1收起， 条件2展开，删除条件1保持展开", () => {
     selectInGroupCascader(["行为事件", "相关事件"]);
     getByTaKey("collapse").click();
     cy.contains("添加条件").click();
@@ -40,7 +40,7 @@ describe("添加key for logic filter", () => {
     isExpand();
   });
 
-  it.only("条件1收起， 条件2收起，删除条件1保持收起", () => {
+  it("条件1收起， 条件2收起，删除条件1保持收起", () => {
     selectInGroupCascader(["行为事件", "相关事件"]);
     getByTaKey("collapse").click();
     cy.contains("添加条件").click();
