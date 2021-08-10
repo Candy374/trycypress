@@ -30,6 +30,7 @@ export function selectInGroupCascader(
 
   cascader.should("not.be.visible");
 }
+
 export function getByTaKey(taKey: string, parentKeys?: string[], index = 0) {
   const taKeys = (parentKeys || []).concat([taKey]);
   let i = 0;
@@ -45,6 +46,7 @@ export function getByTaKey(taKey: string, parentKeys?: string[], index = 0) {
 
   return cyObject.eq(index);
 }
+
 export function getOperator(parentKeys?: string[]) {
   return getByTaKey("operator", parentKeys);
 }
@@ -109,7 +111,7 @@ export function injectApi() {
 }
 
 export function checkApi(filter: {}) {
-  cy.get("@apiCheck").its("request.body").should("deep.equal", {
+  cy.wait("@apiCheck").its("request.body").should("deep.equal", {
     filter,
   });
 }
